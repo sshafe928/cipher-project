@@ -16,6 +16,7 @@ const CipherGame = () => {
   const [originalWord, setOriginalWord] = useState('');
   const [show, setShow] = useState(false)
   const [hint, setHint] = useState('');
+  const [guess, setGuess] = useState('');
 
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
@@ -71,21 +72,33 @@ const CipherGame = () => {
     switch (level) {
       case 'level_1':
         const { scrambledWord: word1, shuffledOrder: order1 } = scrambleWord(word, 3);
-        return { originalWord: word, cipher: word1, gridSize: 3, order: order1 };
+        return { originalWord: word, cipher: word1, gridSize: 3, order: order1, hint: hint };
       case 'level_2':
         const { scrambledWord: word2, shuffledOrder: order2 } = scrambleWord(word, 4);
-        return { originalWord: word, cipher: word2, gridSize: 4, order: order2 };
+        return { originalWord: word, cipher: word2, gridSize: 4, order: order2, hint: hint };
       case 'level_3':
         const { scrambledWord: word3, shuffledOrder: order3 } = scrambleWord(word, 5);
-        return { originalWord: word, cipher: word3, gridSize: 5, order: order3 };
+        return { originalWord: word, cipher: word3, gridSize: 5, order: order3, hint: hint };
       case 'level_4':
         const { scrambledWord: word4, shuffledOrder: order4 } = scrambleWord(word, 6);
-        return { originalWord: word, cipher: word4, gridSize: 6, order: order4 };
+        return { originalWord: word, cipher: word4, gridSize: 6, order: order4, hint: hint };
       default:
         return null;
     }
   };
 
+  const checkWord = () => {
+    // Compare guess with original word
+    if (guess.toLowerCase() === originalWord.toLowerCase()) {
+      alert('Congratulations! You guessed the word correctly.');
+      //check to see how many games on level 1 played then either move to leaderboard or another level 2
+      startNewGame(selectedLevel);
+    } else {
+      alert('Sorry, that is not the correct word.');
+      //clear the guess
+    }
+  }
+  
   // Start new game function
   const startNewGame = (level) => {
     setSelectedLevel(level); 
@@ -101,7 +114,6 @@ const CipherGame = () => {
       setHint(gameDetails.hint);
     }
 
-  
   };
 
   return (
@@ -115,6 +127,9 @@ const CipherGame = () => {
       <p>Cipher: {cipher}</p>
       <p>Order: {order.join(', ')}</p>
       <p>Guess:</p>
+      <p>{selectedLevel && <input type="text" placeholder="Enter your guess" onChange={(e) => setGuess(e.target.value)} />}</p>
+      <button className="btn" onClick={()=> checkWord()}>Submit</button>
+      <p>{selectedLevel && <button className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>}</p>
       {show && <p>{hint}</p>}
 
       {/* Cipher Grid */}

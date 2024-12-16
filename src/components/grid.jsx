@@ -59,7 +59,7 @@ return (
             }}
             onClick={() => handleCellClick(rowIndex, colIndex)}
         >
-            {cell}  {/* Display the letter in the cell */}
+            {cell}  
         </div>
         ))
     )}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import CipherGrid from '../components/grid';
 import { words_9, words_16, words_25, words_36 } from '../cipher-words';
+import Timer from '../components/timer';
 
 
 const CipherGame = () => {
@@ -120,6 +121,7 @@ const CipherGame = () => {
     <div>
       <button className="btn">Quit</button>
       <button className="btn" onClick={()=>setShow(!show)}>Hint</button>
+      <Timer/>
       
       <h1>Transposition Cipher Game</h1>
 

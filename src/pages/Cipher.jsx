@@ -4,7 +4,6 @@ import CipherGrid from '../components/grid';
 import { words_9, words_16, words_25, words_36 } from '../cipher-words';
 import Timer from '../components/timer';
 
-
 const CipherGame = () => {
   const location = useLocation(); 
   const { level } = location.state || {};
@@ -15,9 +14,22 @@ const CipherGame = () => {
   const [cipher, setCipher] = useState('');
   const [order, setOrder] = useState([]);
   const [originalWord, setOriginalWord] = useState('');
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
   const [hint, setHint] = useState('');
   const [guess, setGuess] = useState('');
+  const [resetTimer, setResetTimer] = useState(false); // New state to control timer reset
+  const [gameComplete, setGameComplete] = useState(false); // Tracks if the game is complete
+  const [levelStats, setLevelStats] = useState({ level_1: 0, level_2: 0, level_3: 0, level_4: 0 }); // Tracks level completions
+  const [showPopup, setShowPopup] = useState(false); // To show the popup when time runs out
+
+  useEffect(() => {
+    if (gameComplete) {
+      if (levelStats[selectedLevel] >= 3) {
+        // Move to leaderboard when 3 games for the level are completed
+        alert('Congratulations! You reached the leaderboard for this level!');
+      }
+    }
+  }, [gameComplete, levelStats, selectedLevel]);
 
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
@@ -92,19 +104,29 @@ const CipherGame = () => {
     // Compare guess with original word
     if (guess.toLowerCase() === originalWord.toLowerCase()) {
       alert('Congratulations! You guessed the word correctly.');
-      //check to see how many games on level 1 played then either move to leaderboard or another level 2
-      startNewGame(selectedLevel);
+      incrementLevelCompletion(selectedLevel); // Track level completion
+      startNewGame(selectedLevel); // Start new game after correct guess
     } else {
       alert('Sorry, that is not the correct word.');
-      //clear the guess
     }
-  }
-  
+  };
+
+  // Increment level completion
+  const incrementLevelCompletion = (level) => {
+    setLevelStats(prevState => {
+      const newStats = { ...prevState };
+      newStats[level] += 1;
+      return newStats;
+    });
+  };
+
   // Start new game function
   const startNewGame = (level) => {
-    setSelectedLevel(level); 
+    setSelectedLevel(level);
+    setResetTimer(true); 
+    setGameComplete(false); 
+    setGuess(''); 
 
-    // Get scrambled word details
     const gameDetails = handleLevelScrambling(level);
 
     if (gameDetails) {
@@ -114,28 +136,49 @@ const CipherGame = () => {
       setOriginalWord(gameDetails.originalWord);
       setHint(gameDetails.hint);
     }
+  };
 
+  // Show the "You ran out of time" popup
+  const handleTimeOut = () => {
+    setShowPopup(true);
+    setResetTimer(false); // Stop the timer
+  };
+
+  // Close the timeout popup
+  const closePopup = () => {
+    setShowPopup(false);
+    startNewGame(selectedLevel); // Start a new game
   };
 
   return (
     <div>
-      <button className="btn">Quit</button>
-      <button className="btn" onClick={()=>setShow(!show)}>Hint</button>
-      <Timer/>
-      
+      <a href='/Levels'><button className="btn">Quit</button></a>
+      <button className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>
+      <button className="btn" onClick={() => setShow(!show)}>Hint</button>
+      <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} />
+
       <h1>Transposition Cipher Game</h1>
 
       {/* Display Game Information */}
       <p>Cipher: {cipher}</p>
       <p>Order: {order.join(', ')}</p>
       <p>Guess:</p>
-      <p>{selectedLevel && <input type="text" placeholder="Enter your guess" onChange={(e) => setGuess(e.target.value)} />}</p>
-      <button className="btn" onClick={()=> checkWord()}>Submit</button>
-      <p>{selectedLevel && <button className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>}</p>
+      <input type="text" placeholder="Enter your guess" onChange={(e) => setGuess(e.target.value)} />
+      <button className="btn" onClick={checkWord}>Submit</button>
+      
       {show && <p>{hint}</p>}
 
       {/* Cipher Grid */}
       <CipherGrid gridSize={gridSize} targetWord={originalWord} />
+
+      {/* Timeout Popup */}
+      {showPopup && (
+        <div className="popup">
+          <h2>You ran out of time!</h2>
+          <a href="/Levels"><button className="btn">Back</button></a>
+          <button onClick={() => closePopup()}>Reset</button>
+        </div>
+      )}
     </div>
   );
 };

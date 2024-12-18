@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const Timer = ({ resetTimer, handleTimeOut }) => {
-    const [seconds, setSeconds] = useState(50);  // Timer starts at 50 seconds
-    const [isRunning, setIsRunning] = useState(true);  // Timer should always run unless reset
+    const [seconds, setSeconds] = useState(60); 
+    const [isRunning, setIsRunning] = useState(true); 
   
     useEffect(() => {
       if (resetTimer) {
         // Reset the timer to 50 seconds when resetTimer is true
-        setSeconds(50);
-        setIsRunning(true);  // Restart the countdown
+        setSeconds(60);
+        setIsRunning(true);  
       }
-    }, [resetTimer]);  // Dependency on resetTimer, will trigger when resetTimer changes
+    }, [resetTimer]);  
   
     useEffect(() => {
       let interval;
@@ -22,7 +22,7 @@ const Timer = ({ resetTimer, handleTimeOut }) => {
             if (prevSeconds === 1) {
               handleTimeOut();
               clearInterval(interval);
-              return 0;  // Stop the countdown when it reaches zero
+              return 0; 
             }
             return prevSeconds - 1;
           });
@@ -31,7 +31,7 @@ const Timer = ({ resetTimer, handleTimeOut }) => {
         clearInterval(interval);
       }
   
-      return () => clearInterval(interval);  // Cleanup interval on unmount
+      return () => clearInterval(interval);
     }, [isRunning, handleTimeOut]);
   
     return (

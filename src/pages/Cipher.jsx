@@ -1,42 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';  // Use useNavigate for navigation
+import { useNavigate, useLocation } from 'react-router-dom';  
 import CipherGrid from '../components/grid';
 import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 import Timer from '../components/timer';
 
 const CipherGame = () => {
-  const navigate = useNavigate();  // useNavigate to handle navigation
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { level } = location.state || {}; 
 
-  // State variables to manage game state
-  const [selectedLevel, setSelectedLevel] = useState('level_1'); // Initial level
+  const [selectedLevel, setSelectedLevel] = useState(level || 'level_1'); 
   const [gridSize, setGridSize] = useState(3);
   const [cipher, setCipher] = useState('');
   const [order, setOrder] = useState([]);
   const [originalWord, setOriginalWord] = useState('');
   const [show, setShow] = useState(false);
   const [hint, setHint] = useState('');
-  const [resetTimer, setResetTimer] = useState('false');
+  const [resetTimer, setResetTimer] = useState(false);
   const [guess, setGuess] = useState('');
   const [gameComplete, setGameComplete] = useState(false);
   const [totalGamesCompleted, setTotalGamesCompleted] = useState(() => {
-    // Load the total games completed count from localStorage
     const savedStats = JSON.parse(localStorage.getItem('userStats')) || {};
     return savedStats.totalGamesCompleted || 0;
   });
   const [showPopup, setShowPopup] = useState(false);
-
-  useEffect(() => {
-    if (gameComplete) {
-      // Check if 3 games are completed in total
-      if (totalGamesCompleted >= 3) {
-        console.log('3 games completed, navigating to LeaderBoard');
-        navigate('/LeaderBoard', { state: { level: selectedLevel } });  // Pass selectedLevel to Leaderboard
-        // Reset the total games completed count
-        const userStats = { totalGamesCompleted: 0 };
-        localStorage.setItem('userStats', JSON.stringify(userStats));
-      }
-    }
-  }, [gameComplete, totalGamesCompleted, selectedLevel, navigate]);
 
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
@@ -52,7 +39,6 @@ const CipherGame = () => {
     }
   }, [selectedLevel]);
 
-  // Scrambling function for different levels
   const handleLevelScrambling = (level) => {
     const levelWordMaps = {
       'level_1': { words: words_9, hints: words_9_hints, length: 9 },
@@ -113,9 +99,17 @@ const CipherGame = () => {
     // Compare guess with original word
     if (guess.toLowerCase() === originalWord.toLowerCase()) {
       alert('Congratulations! You guessed the word correctly.');
-      console.log('Correct guess!');
-      incrementGameCompletion(); // Increment total game completion
-      startNewGame(selectedLevel);
+      setGameComplete(true);  
+      incrementGameCompletion();
+      
+      if (totalGamesCompleted > 2) {
+        // Reset the total games completed count in localStorage
+        localStorage.setItem('userStats', JSON.stringify({ totalGamesCompleted: 0 }));
+        setTotalGamesCompleted(0);
+        navigate('/Leaderboard', { state: { level: selectedLevel } });
+      } else {
+        startNewGame(selectedLevel);
+      }
     } else {
       alert('Sorry, that is not the correct word.');
     }
@@ -123,26 +117,14 @@ const CipherGame = () => {
 
   const incrementGameCompletion = () => {
     const userStats = JSON.parse(localStorage.getItem('userStats')) || {};
-    // Increment the total games completed count
     const updatedTotalGames = (userStats.totalGamesCompleted || 0) + 1;
 
-    console.log(`Incrementing total games completed to ${updatedTotalGames}`);
-
-    // Update localStorage
     userStats.totalGamesCompleted = updatedTotalGames;
     localStorage.setItem('userStats', JSON.stringify(userStats));
 
-    // Update local state
     setTotalGamesCompleted(updatedTotalGames);
-
-    // Log total games completed for debugging
-    console.log('Updated Total Games Completed:', updatedTotalGames);
-
-    // Set game complete to trigger navigation check
-    setGameComplete(true);
   };
 
-  // Start new game function
   const startNewGame = (level) => {
     setGameComplete(false);
     window.location.reload();
@@ -160,13 +142,11 @@ const CipherGame = () => {
     }
   };
 
-  // Show the "You ran out of time" popup
   const handleTimeOut = () => {
     setShowPopup(true);
-    setResetTimer(false);
+    setResetTimer(true);
   };
 
-  // Close the timeout popup
   const closePopup = () => {
     setShowPopup(false);
     startNewGame(selectedLevel);
@@ -182,7 +162,6 @@ const CipherGame = () => {
 
       <h1>Transposition Cipher Game</h1>
 
-      {/* Display Game Information */}
       <p>Cipher: {cipher}</p>
       <p>Order: {order.join(', ')}</p>
       <p>Guess:</p>
@@ -191,10 +170,8 @@ const CipherGame = () => {
 
       {show && <p>{hint}</p>}
 
-      {/* Cipher Grid */}
       <CipherGrid gridSize={gridSize} targetWord={originalWord} />
 
-      {/* Timeout Popup */}
       {showPopup && (
         <div className="popup">
           <h2>You ran out of time!</h2>

@@ -12,7 +12,7 @@ const router = createBrowserRouter([
   { path: '/', element: <Home/>},
   { path: '/Name', element: <Name/> },
   { path: '/Levels', element: <Levels/>},
-  { path: '/Cipher-game', element:<Cipher/>},
+  { path: '/CipherGame', element:<Cipher/>},
   { path: '/Leaderboard', element:<LeaderBoard/>},
   // Add more routes here
 ])

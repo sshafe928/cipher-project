@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';  // Using useNavigate here
 import CipherGrid from '../components/grid';
 import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 import Timer from '../components/timer';
 
 const CipherGame = () => {
-  const location = useLocation(); 
-  const { level } = location.state || {};
-  
+  const location = useLocation();
+  const navigate = useNavigate();  // useNavigate to handle navigation
+  const { level, initials } = location.state || {};
+
   // State variables to manage game state
   const [selectedLevel, setSelectedLevel] = useState(level); // Initial level
   const [gridSize, setGridSize] = useState(3);
@@ -16,26 +17,28 @@ const CipherGame = () => {
   const [originalWord, setOriginalWord] = useState('');
   const [show, setShow] = useState(false);
   const [hint, setHint] = useState('');
-  const [resetTimer, setResetTimer] = useState('false')
+  const [resetTimer, setResetTimer] = useState('false');
   const [guess, setGuess] = useState('');
-  const [gameComplete, setGameComplete] = useState(false); // Tracks if the game is complete
-  const [levelStats, setLevelStats] = useState({ level_1: 0, level_2: 0, level_3: 0, level_4: 0 }); // Tracks level completions
+  const [gameComplete, setGameComplete] = useState(false);
+  const [levelStats, setLevelStats] = useState(() => {
+    const savedStats = JSON.parse(localStorage.getItem('userStats')) || {};
+    return savedStats[initials] || { level_1: 0, level_2: 0, level_3: 0, level_4: 0 };
+  });
   const [showPopup, setShowPopup] = useState(false); // To show the popup when time runs out
 
   useEffect(() => {
     if (gameComplete) {
+      // Check if player has completed 3 games at this level and then navigate
       if (levelStats[selectedLevel] >= 3) {
-        // Move to leaderboard when 3 games for the level are completed
-        alert('Congratulations! You reached the leaderboard for this level!');
+        navigate('/LeaderBoard');  // Use navigate for redirection
       }
     }
-  }, [gameComplete, levelStats, selectedLevel]);
+  }, [gameComplete, levelStats, selectedLevel, navigate]);
 
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
     if (selectedLevel) {
       const gameDetails = handleLevelScrambling(selectedLevel);
-      
       if (gameDetails) {
         setGridSize(gameDetails.gridSize);
         setCipher(gameDetails.cipher);
@@ -44,7 +47,7 @@ const CipherGame = () => {
         setHint(gameDetails.hint);
       }
     }
-  }, [selectedLevel]); 
+  }, [selectedLevel]);
 
   // Scrambling function for different levels
   const handleLevelScrambling = (level) => {
@@ -54,37 +57,37 @@ const CipherGame = () => {
       'level_3': { words: words_25, hints: words_25_hints, length: 25 },
       'level_4': { words: words_36, hints: words_36_hints, length: 36 }
     };
-  
+
     const { words, hints, length } = levelWordMaps[level];
     const randomIndex = Math.floor(Math.random() * words.length);  // Randomly select an index
-    
+
     const word = words[randomIndex];
     const hint = hints[randomIndex]; // Get the corresponding hint for the word
-  
+
     if (word.length !== length) {
       console.error(`Word length mismatch for ${level}`);
       return null;
     }
-  
+
     const scrambleWord = (word, numParts) => {
       const parts = [];
       const partLength = Math.floor(length / numParts);
       for (let i = 0; i < numParts; i++) {
         parts.push(word.slice(i * partLength, (i + 1) * partLength));
       }
-  
+
       const groupedLetters = [];
       for (let i = 0; i < parts[0].length; i++) {
         groupedLetters.push(parts.map(part => part[i]));
       }
-  
+
       const shuffledOrder = Array.from({ length: numParts }, (_, i) => i).sort(() => Math.random() - 0.5);
       const shuffledGroups = shuffledOrder.map(index => groupedLetters[index]);
-  
+
       const scrambledWord = shuffledGroups.map(group => group.join('')).join('');
       return { scrambledWord, shuffledOrder };
     };
-  
+
     switch (level) {
       case 'level_1':
         const { scrambledWord: word1, shuffledOrder: order1 } = scrambleWord(word, 3);
@@ -107,30 +110,37 @@ const CipherGame = () => {
     // Compare guess with original word
     if (guess.toLowerCase() === originalWord.toLowerCase()) {
       alert('Congratulations! You guessed the word correctly.');
+      console.log('Correct guess!');
       incrementLevelCompletion(selectedLevel); // Track level completion
       startNewGame(selectedLevel); // Start new game after correct guess
     } else {
       alert('Sorry, that is not the correct word.');
     }
   };
-
-  // Increment level completion
+  
   const incrementLevelCompletion = (level) => {
-    setLevelStats(prevState => {
-      const newStats = { ...prevState };
-      newStats[level] += 1;
-      return newStats;
-    });
+    console.log(`Incrementing level completion for ${level}`);
+    const updatedStats = { ...levelStats };
+    updatedStats[selectedLevel] += 1;
+  
+    // Update level stats in localStorage
+    const userStats = JSON.parse(localStorage.getItem('userStats')) || {};
+    userStats[initials] = updatedStats;
+    localStorage.setItem('userStats', JSON.stringify(userStats));  
+  
+    setLevelStats(updatedStats);
+    console.log('Updated stats:', updatedStats);
   };
 
   // Start new game function
   const startNewGame = (level) => {
     setGameComplete(false);
-    setShow(false) 
-    setGuess(''); 
-  
+    window.location.reload();
+    setShow(false);
+    setGuess('');
+
     const gameDetails = handleLevelScrambling(level);
-  
+
     if (gameDetails) {
       setGridSize(gameDetails.gridSize);
       setCipher(gameDetails.cipher);
@@ -138,8 +148,6 @@ const CipherGame = () => {
       setOriginalWord(gameDetails.originalWord);
       setHint(gameDetails.hint);
     }
-  
-    
   };
 
   // Show the "You ran out of time" popup
@@ -160,6 +168,7 @@ const CipherGame = () => {
       <button className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>
       <button className="btn" onClick={() => setShow(!show)}>Hint</button>
       <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} />
+      <h1>Cipher Game - Level {level}</h1>
 
       <h1>Transposition Cipher Game</h1>
 
@@ -169,7 +178,7 @@ const CipherGame = () => {
       <p>Guess:</p>
       <input type="text" placeholder="Enter your guess" onChange={(e) => setGuess(e.target.value)} />
       <button className="btn" onClick={checkWord}>Submit</button>
-      
+
       {show && <p>{hint}</p>}
 
       {/* Cipher Grid */}

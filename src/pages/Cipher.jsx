@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import CipherGrid from '../components/grid';
-import { words_9, words_16, words_25, words_36 } from '../cipher-words';
+import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 import Timer from '../components/timer';
 
 const CipherGame = () => {
@@ -44,44 +44,47 @@ const CipherGame = () => {
         setHint(gameDetails.hint);
       }
     }
-  }, [selectedLevel]); // This hook runs when selectedLevel changes
+  }, [selectedLevel]); 
 
   // Scrambling function for different levels
   const handleLevelScrambling = (level) => {
     const levelWordMaps = {
-      'level_1': { words: words_9, length: 9 },
-      'level_2': { words: words_16, length: 16 },
-      'level_3': { words: words_25, length: 25 },
-      'level_4': { words: words_36, length: 36 }
+      'level_1': { words: words_9, hints: words_9_hints, length: 9 },
+      'level_2': { words: words_16, hints: words_16_hints, length: 16 },
+      'level_3': { words: words_25, hints: words_25_hints, length: 25 },
+      'level_4': { words: words_36, hints: words_36_hints, length: 36 }
     };
-
-    const { words, length } = levelWordMaps[level];
-    const word = words[Math.floor(Math.random() * words.length)];
-
+  
+    const { words, hints, length } = levelWordMaps[level];
+    const randomIndex = Math.floor(Math.random() * words.length);  // Randomly select an index
+    
+    const word = words[randomIndex];
+    const hint = hints[randomIndex]; // Get the corresponding hint for the word
+  
     if (word.length !== length) {
       console.error(`Word length mismatch for ${level}`);
       return null;
     }
-
+  
     const scrambleWord = (word, numParts) => {
       const parts = [];
       const partLength = Math.floor(length / numParts);
       for (let i = 0; i < numParts; i++) {
         parts.push(word.slice(i * partLength, (i + 1) * partLength));
       }
-
+  
       const groupedLetters = [];
       for (let i = 0; i < parts[0].length; i++) {
         groupedLetters.push(parts.map(part => part[i]));
       }
-
+  
       const shuffledOrder = Array.from({ length: numParts }, (_, i) => i).sort(() => Math.random() - 0.5);
       const shuffledGroups = shuffledOrder.map(index => groupedLetters[index]);
-
+  
       const scrambledWord = shuffledGroups.map(group => group.join('')).join('');
       return { scrambledWord, shuffledOrder };
     };
-
+  
     switch (level) {
       case 'level_1':
         const { scrambledWord: word1, shuffledOrder: order1 } = scrambleWord(word, 3);
@@ -122,13 +125,12 @@ const CipherGame = () => {
 
   // Start new game function
   const startNewGame = (level) => {
-    setSelectedLevel(level);
-    setResetTimer(true); 
+    setResetTimer(true);  // This triggers the reset of the timer in the Timer component
     setGameComplete(false); 
     setGuess(''); 
-
+  
     const gameDetails = handleLevelScrambling(level);
-
+  
     if (gameDetails) {
       setGridSize(gameDetails.gridSize);
       setCipher(gameDetails.cipher);
@@ -136,6 +138,9 @@ const CipherGame = () => {
       setOriginalWord(gameDetails.originalWord);
       setHint(gameDetails.hint);
     }
+  
+    // Reset the timer flag to false after the game setup
+    setResetTimer(true);  // After this, the timer is ready to run again
   };
 
   // Show the "You ran out of time" popup

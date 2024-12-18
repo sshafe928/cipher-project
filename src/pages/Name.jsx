@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Name = () => {
     const [name, setName] = useState('');
-    const navigate = useNavigate();  // Use useNavigate instead of useHistory
+    const navigate = useNavigate();  
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -20,7 +20,7 @@ const Name = () => {
                 localStorage.setItem('userStats', JSON.stringify(savedStats));
             }
             // Redirect to Levels page
-            navigate('/Levels');  // Use navigate() instead of history.push
+            navigate('/Levels'); 
         } else {
             alert("Please enter your name");
         }

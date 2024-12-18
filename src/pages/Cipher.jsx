@@ -24,7 +24,7 @@ const CipherGame = () => {
     const savedStats = JSON.parse(localStorage.getItem('userStats')) || {};
     return savedStats[initials] || { level_1: 0, level_2: 0, level_3: 0, level_4: 0 };
   });
-  const [showPopup, setShowPopup] = useState(false); // To show the popup when time runs out
+  const [showPopup, setShowPopup] = useState(false); 
 
   useEffect(() => {
     if (gameComplete) {
@@ -59,10 +59,10 @@ const CipherGame = () => {
     };
 
     const { words, hints, length } = levelWordMaps[level];
-    const randomIndex = Math.floor(Math.random() * words.length);  // Randomly select an index
+    const randomIndex = Math.floor(Math.random() * words.length); 
 
     const word = words[randomIndex];
-    const hint = hints[randomIndex]; // Get the corresponding hint for the word
+    const hint = hints[randomIndex]; 
 
     if (word.length !== length) {
       console.error(`Word length mismatch for ${level}`);
@@ -112,7 +112,7 @@ const CipherGame = () => {
       alert('Congratulations! You guessed the word correctly.');
       console.log('Correct guess!');
       incrementLevelCompletion(selectedLevel); // Track level completion
-      startNewGame(selectedLevel); // Start new game after correct guess
+      startNewGame(selectedLevel); 
     } else {
       alert('Sorry, that is not the correct word.');
     }
@@ -153,13 +153,13 @@ const CipherGame = () => {
   // Show the "You ran out of time" popup
   const handleTimeOut = () => {
     setShowPopup(true);
-    setResetTimer(false); // Stop the timer
+    setResetTimer(false); 
   };
 
   // Close the timeout popup
   const closePopup = () => {
     setShowPopup(false);
-    startNewGame(selectedLevel); // Start a new game
+    startNewGame(selectedLevel); 
   };
 
   return (

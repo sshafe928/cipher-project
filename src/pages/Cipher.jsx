@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';  
 import CipherGrid from '../components/grid';
-import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 import Timer from '../components/timer';
 
 const CipherGame = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { level } = location.state || {}; 
+  const { level, initials } = location.state || {}; 
 
   const [selectedLevel, setSelectedLevel] = useState(level || 'level_1'); 
   const [gridSize, setGridSize] = useState(3);
@@ -25,6 +24,9 @@ const CipherGame = () => {
   });
   const [showPopup, setShowPopup] = useState(false);
 
+  // Track remaining time for each puzzle
+  const [timeLeftForPuzzle, setTimeLeftForPuzzle] = useState([]);
+
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
     if (selectedLevel) {
@@ -39,74 +41,65 @@ const CipherGame = () => {
     }
   }, [selectedLevel]);
 
+  
   const handleLevelScrambling = (level) => {
-    const levelWordMaps = {
-      'level_1': { words: words_9, hints: words_9_hints, length: 9 },
-      'level_2': { words: words_16, hints: words_16_hints, length: 16 },
-      'level_3': { words: words_25, hints: words_25_hints, length: 25 },
-      'level_4': { words: words_36, hints: words_36_hints, length: 36 }
-    };
-
-    const { words, hints, length } = levelWordMaps[level];
-    const randomIndex = Math.floor(Math.random() * words.length);
-
-    const word = words[randomIndex];
-    const hint = hints[randomIndex];
-
-    if (word.length !== length) {
-      console.error(`Word length mismatch for ${level}`);
-      return null;
-    }
-
-    const scrambleWord = (word, numParts) => {
-      const parts = [];
-      const partLength = Math.floor(length / numParts);
-      for (let i = 0; i < numParts; i++) {
-        parts.push(word.slice(i * partLength, (i + 1) * partLength));
-      }
-
-      const groupedLetters = [];
-      for (let i = 0; i < parts[0].length; i++) {
-        groupedLetters.push(parts.map(part => part[i]));
-      }
-
-      const shuffledOrder = Array.from({ length: numParts }, (_, i) => i).sort(() => Math.random() - 0.5);
-      const shuffledGroups = shuffledOrder.map(index => groupedLetters[index]);
-
-      const scrambledWord = shuffledGroups.map(group => group.join('')).join('');
-      return { scrambledWord, shuffledOrder };
-    };
-
-    switch (level) {
-      case 'level_1':
-        const { scrambledWord: word1, shuffledOrder: order1 } = scrambleWord(word, 3);
-        return { originalWord: word, cipher: word1, gridSize: 3, order: order1, hint: hint };
-      case 'level_2':
-        const { scrambledWord: word2, shuffledOrder: order2 } = scrambleWord(word, 4);
-        return { originalWord: word, cipher: word2, gridSize: 4, order: order2, hint: hint };
-      case 'level_3':
-        const { scrambledWord: word3, shuffledOrder: order3 } = scrambleWord(word, 5);
-        return { originalWord: word, cipher: word3, gridSize: 5, order: order3, hint: hint };
-      case 'level_4':
-        const { scrambledWord: word4, shuffledOrder: order4 } = scrambleWord(word, 6);
-        return { originalWord: word, cipher: word4, gridSize: 6, order: order4, hint: hint };
-      default:
-        return null;
-    }
+    // ... existing code for scrambling the words
   };
 
-  const checkWord = () => {
-    // Compare guess with original word
+  const handleTimeUpdate = (timeLeft) => {
+    // Calculate the time spent on the current puzzle
+    const timeSpent = 60 - timeLeft;
+  
+    // Store the time spent for the current puzzle
+    setTimeLeftForPuzzle(prev => {
+      const newTimeLeft = [...prev];
+      newTimeLeft.push(timeSpent); // Store the time spent, not the remaining time
+      return newTimeLeft;
+    });
+  };
+
+  const checkWord = async () => {
     if (guess.toLowerCase() === originalWord.toLowerCase()) {
       alert('Congratulations! You guessed the word correctly.');
       setGameComplete(true);  
       incrementGameCompletion();
-      
+  
       if (totalGamesCompleted > 2) {
-        // Reset the total games completed count in localStorage
-        localStorage.setItem('userStats', JSON.stringify({ totalGamesCompleted: 0 }));
-        setTotalGamesCompleted(0);
-        navigate('/Leaderboard', { state: { level: selectedLevel } });
+        // Calculate the total time spent on all puzzles
+        const timeSpent = timeLeftForPuzzle.reduce((sum, time) => sum + time, 0); 
+  
+        // Calculate score (time spent * 10)
+        const score = (240 - timeSpent) * 10
+  
+        try {
+          // Send the score, initials, and other data to the backend
+          let result = await fetch('http://localhost:5000/users', {
+            method: 'POST',
+            body: JSON.stringify({
+              initials, 
+              score,     
+              timeSpent, 
+              id: Date.now(), 
+            }),
+            headers: { 'Content-Type': 'application/json' },
+          });
+  
+          result = await result.json();
+  
+          // Log and alert on success
+          console.log(result);
+          if (result) {
+            alert('Data saved successfully');
+          }
+  
+          // Reset the game completion count and navigate to leaderboard
+          localStorage.setItem('userStats', JSON.stringify({ totalGamesCompleted: 0 }));
+          setTotalGamesCompleted(0);
+          navigate('/Leaderboard', { state: { level: selectedLevel } });
+        } catch (error) {
+          console.error('Error saving data:', error);
+          alert('Failed to save data.');
+        }
       } else {
         startNewGame(selectedLevel);
       }
@@ -114,6 +107,7 @@ const CipherGame = () => {
       alert('Sorry, that is not the correct word.');
     }
   };
+  
 
   const incrementGameCompletion = () => {
     const userStats = JSON.parse(localStorage.getItem('userStats')) || {};
@@ -132,7 +126,6 @@ const CipherGame = () => {
     setGuess('');
 
     const gameDetails = handleLevelScrambling(level);
-
     if (gameDetails) {
       setGridSize(gameDetails.gridSize);
       setCipher(gameDetails.cipher);
@@ -157,7 +150,7 @@ const CipherGame = () => {
       <a href='/Levels'><button className="btn">Quit</button></a>
       <button className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>
       <button className="btn" onClick={() => setShow(!show)}>Hint</button>
-      <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} />
+      <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} onTimeUpdate={handleTimeUpdate} />
       <h1>Cipher Game - Level {selectedLevel}</h1>
 
       <h1>Transposition Cipher Game</h1>

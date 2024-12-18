@@ -9,24 +9,17 @@ const readAllUsers = async (req, res) => {
     }
 }
 
-const createUser = async(req, res) => {
+const createUser = async (req, res) =>  {
+    const { initials, score, timeSpent, id } = req.body;
+
     try {
-        const {name, id} = req.body;
-        let item = await User.findOne({id: id});
-        if(!name || !id){
-            console.log("not all fields are filled out");
-            return res.json({data: [], success: false, msg: "Please fill out all fields"})
-        } else if(item != null) {
-            console.log("a user with that id already exists");
-            return res.json({data: [], success: false, msg: "that id's already taken, try another"})
-        } else {
-            let itemTwo = await User.create(req.body);
-            res.json({success: true, data: itemTwo});
-        }
-    } catch(err) {
-        console.log(err);
+    const newUser = new User({ initials, score, timeSpent, id });
+    await newUser.save();
+    res.status(201).json({ message: 'User data saved successfully' });
+    } catch (err) {
+    res.status(500).json({ error: 'Failed to save user data' });
     }
-}
+};
 
 
 

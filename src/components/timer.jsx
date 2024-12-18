@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Timer = ({ resetTimer, handleTimeOut }) => {
+const Timer = ({ resetTimer, handleTimeOut, onTimeUpdate }) => {
     const [seconds, setSeconds] = useState(60); 
     const [isRunning, setIsRunning] = useState(true); 
   
     useEffect(() => {
       if (resetTimer) {
-        // Reset the timer to 50 seconds when resetTimer is true
+        // Reset the timer to 60 seconds when resetTimer is true
         setSeconds(60);
         setIsRunning(true);  
       }
@@ -34,11 +34,17 @@ const Timer = ({ resetTimer, handleTimeOut }) => {
       return () => clearInterval(interval);
     }, [isRunning, handleTimeOut]);
   
+    useEffect(() => {
+      if (onTimeUpdate) {
+        onTimeUpdate(seconds);
+      }
+    }, [seconds, onTimeUpdate]); 
+  
     return (
       <div>
         <h2>Time: {seconds} seconds</h2>
       </div>
     );
-  };
-  
-  export default Timer;
+};
+
+export default Timer;

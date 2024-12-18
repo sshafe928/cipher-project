@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {readAllUsers, createUser} = require("../controllers/user");
 
-router.get("/Leaderboard", readAllUsers);
-router.post("/CipherGame", createUser);
+router.get("/leaderboard-info", readAllUsers);
+router.post("/", createUser);
 
 
 

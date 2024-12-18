@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';  // Using useNaviga
 import CipherGrid from '../components/grid';
 import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 import Timer from '../components/timer';
+import LeaderBoard from './LeaderBoard';
 
 const CipherGame = () => {
   const location = useLocation();
@@ -28,12 +29,19 @@ const CipherGame = () => {
 
   useEffect(() => {
     if (gameComplete) {
-      // Check if player has completed 3 games at this level and then navigate
-      if (levelStats[selectedLevel] >= 3) {
-        navigate('/LeaderBoard');  // Use navigate for redirection
+      const userStats = JSON.parse(localStorage.getItem('userStats')) || {};
+      const currentUserStats = userStats[initials] || { level_1: 0, level_2: 0, level_3: 0, level_4: 0 };
+      
+      console.log(`Checking Level Completion: ${currentUserStats[selectedLevel]} games completed`);
+      
+      if (currentUserStats[selectedLevel] >= 3) {
+        console.log('3 games completed, navigating to LeaderBoard');
+        navigate('/LeaderBoard');  // Trigger navigation to Leaderboard
+      } else {
+        console.log('Not enough games completed yet');
       }
     }
-  }, [gameComplete, levelStats, selectedLevel, navigate]);
+  }, [gameComplete, initials, selectedLevel, navigate]);
 
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
@@ -119,17 +127,25 @@ const CipherGame = () => {
   };
   
   const incrementLevelCompletion = (level) => {
-    console.log(`Incrementing level completion for ${level}`);
-    const updatedStats = { ...levelStats };
-    updatedStats[selectedLevel] += 1;
-  
-    // Update level stats in localStorage
     const userStats = JSON.parse(localStorage.getItem('userStats')) || {};
-    userStats[initials] = updatedStats;
+    const currentUserStats = userStats[initials] || { level_1: 0, level_2: 0, level_3: 0, level_4: 0 };
+    
+    // Increment the specific level's completion count
+    currentUserStats[level] = (currentUserStats[level] || 0) + 1;
+    console.log(`Incrementing ${level} to ${currentUserStats[level]}`);
+    
+    // Update localStorage
+    userStats[initials] = currentUserStats;
     localStorage.setItem('userStats', JSON.stringify(userStats));  
-  
-    setLevelStats(updatedStats);
-    console.log('Updated stats:', updatedStats);
+    
+    // Update local state
+    setLevelStats(currentUserStats);
+    
+    // Log level completion for debugging
+    console.log('Updated Level Stats:', currentUserStats);
+    
+    // Set game complete to trigger navigation check
+    setGameComplete(true);
   };
 
   // Start new game function

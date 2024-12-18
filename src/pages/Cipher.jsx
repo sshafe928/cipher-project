@@ -16,8 +16,8 @@ const CipherGame = () => {
   const [originalWord, setOriginalWord] = useState('');
   const [show, setShow] = useState(false);
   const [hint, setHint] = useState('');
+  const [resetTimer, setResetTimer] = useState('false')
   const [guess, setGuess] = useState('');
-  const [resetTimer, setResetTimer] = useState(false); // New state to control timer reset
   const [gameComplete, setGameComplete] = useState(false); // Tracks if the game is complete
   const [levelStats, setLevelStats] = useState({ level_1: 0, level_2: 0, level_3: 0, level_4: 0 }); // Tracks level completions
   const [showPopup, setShowPopup] = useState(false); // To show the popup when time runs out
@@ -125,8 +125,8 @@ const CipherGame = () => {
 
   // Start new game function
   const startNewGame = (level) => {
-    setResetTimer(true);  // This triggers the reset of the timer in the Timer component
-    setGameComplete(false); 
+    setGameComplete(false);
+    setShow(false) 
     setGuess(''); 
   
     const gameDetails = handleLevelScrambling(level);
@@ -139,8 +139,7 @@ const CipherGame = () => {
       setHint(gameDetails.hint);
     }
   
-    // Reset the timer flag to false after the game setup
-    setResetTimer(true);  // After this, the timer is ready to run again
+    
   };
 
   // Show the "You ran out of time" popup

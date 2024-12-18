@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';  // Using useNavigate here
+import { useNavigate } from 'react-router-dom';  // Use useNavigate for navigation
 import CipherGrid from '../components/grid';
 import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 import Timer from '../components/timer';
-import LeaderBoard from './LeaderBoard';
 
 const CipherGame = () => {
-  const location = useLocation();
   const navigate = useNavigate();  // useNavigate to handle navigation
-  const { level, initials } = location.state || {};
 
   // State variables to manage game state
-  const [selectedLevel, setSelectedLevel] = useState(level); // Initial level
+  const [selectedLevel, setSelectedLevel] = useState('level_1'); // Initial level
   const [gridSize, setGridSize] = useState(3);
   const [cipher, setCipher] = useState('');
   const [order, setOrder] = useState([]);
@@ -21,27 +18,25 @@ const CipherGame = () => {
   const [resetTimer, setResetTimer] = useState('false');
   const [guess, setGuess] = useState('');
   const [gameComplete, setGameComplete] = useState(false);
-  const [levelStats, setLevelStats] = useState(() => {
+  const [totalGamesCompleted, setTotalGamesCompleted] = useState(() => {
+    // Load the total games completed count from localStorage
     const savedStats = JSON.parse(localStorage.getItem('userStats')) || {};
-    return savedStats[initials] || { level_1: 0, level_2: 0, level_3: 0, level_4: 0 };
+    return savedStats.totalGamesCompleted || 0;
   });
-  const [showPopup, setShowPopup] = useState(false); 
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (gameComplete) {
-      const userStats = JSON.parse(localStorage.getItem('userStats')) || {};
-      const currentUserStats = userStats[initials] || { level_1: 0, level_2: 0, level_3: 0, level_4: 0 };
-      
-      console.log(`Checking Level Completion: ${currentUserStats[selectedLevel]} games completed`);
-      
-      if (currentUserStats[selectedLevel] >= 3) {
+      // Check if 3 games are completed in total
+      if (totalGamesCompleted >= 3) {
         console.log('3 games completed, navigating to LeaderBoard');
-        navigate('/LeaderBoard');  // Trigger navigation to Leaderboard
-      } else {
-        console.log('Not enough games completed yet');
+        navigate('/LeaderBoard', { state: { level: selectedLevel } });  // Pass selectedLevel to Leaderboard
+        // Reset the total games completed count
+        const userStats = { totalGamesCompleted: 0 };
+        localStorage.setItem('userStats', JSON.stringify(userStats));
       }
     }
-  }, [gameComplete, initials, selectedLevel, navigate]);
+  }, [gameComplete, totalGamesCompleted, selectedLevel, navigate]);
 
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
@@ -67,10 +62,10 @@ const CipherGame = () => {
     };
 
     const { words, hints, length } = levelWordMaps[level];
-    const randomIndex = Math.floor(Math.random() * words.length); 
+    const randomIndex = Math.floor(Math.random() * words.length);
 
     const word = words[randomIndex];
-    const hint = hints[randomIndex]; 
+    const hint = hints[randomIndex];
 
     if (word.length !== length) {
       console.error(`Word length mismatch for ${level}`);
@@ -119,31 +114,30 @@ const CipherGame = () => {
     if (guess.toLowerCase() === originalWord.toLowerCase()) {
       alert('Congratulations! You guessed the word correctly.');
       console.log('Correct guess!');
-      incrementLevelCompletion(selectedLevel); // Track level completion
-      startNewGame(selectedLevel); 
+      incrementGameCompletion(); // Increment total game completion
+      startNewGame(selectedLevel);
     } else {
       alert('Sorry, that is not the correct word.');
     }
   };
-  
-  const incrementLevelCompletion = (level) => {
+
+  const incrementGameCompletion = () => {
     const userStats = JSON.parse(localStorage.getItem('userStats')) || {};
-    const currentUserStats = userStats[initials] || { level_1: 0, level_2: 0, level_3: 0, level_4: 0 };
-    
-    // Increment the specific level's completion count
-    currentUserStats[level] = (currentUserStats[level] || 0) + 1;
-    console.log(`Incrementing ${level} to ${currentUserStats[level]}`);
-    
+    // Increment the total games completed count
+    const updatedTotalGames = (userStats.totalGamesCompleted || 0) + 1;
+
+    console.log(`Incrementing total games completed to ${updatedTotalGames}`);
+
     // Update localStorage
-    userStats[initials] = currentUserStats;
-    localStorage.setItem('userStats', JSON.stringify(userStats));  
-    
+    userStats.totalGamesCompleted = updatedTotalGames;
+    localStorage.setItem('userStats', JSON.stringify(userStats));
+
     // Update local state
-    setLevelStats(currentUserStats);
-    
-    // Log level completion for debugging
-    console.log('Updated Level Stats:', currentUserStats);
-    
+    setTotalGamesCompleted(updatedTotalGames);
+
+    // Log total games completed for debugging
+    console.log('Updated Total Games Completed:', updatedTotalGames);
+
     // Set game complete to trigger navigation check
     setGameComplete(true);
   };
@@ -169,13 +163,13 @@ const CipherGame = () => {
   // Show the "You ran out of time" popup
   const handleTimeOut = () => {
     setShowPopup(true);
-    setResetTimer(false); 
+    setResetTimer(false);
   };
 
   // Close the timeout popup
   const closePopup = () => {
     setShowPopup(false);
-    startNewGame(selectedLevel); 
+    startNewGame(selectedLevel);
   };
 
   return (
@@ -184,7 +178,7 @@ const CipherGame = () => {
       <button className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>
       <button className="btn" onClick={() => setShow(!show)}>Hint</button>
       <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} />
-      <h1>Cipher Game - Level {level}</h1>
+      <h1>Cipher Game - Level {selectedLevel}</h1>
 
       <h1>Transposition Cipher Game</h1>
 

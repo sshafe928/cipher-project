@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import '../css/grid.css';
 
 const CipherGrid = ({ gridSize }) => {
 // Dynamically create the initial grid based on gridSize
@@ -33,37 +34,21 @@ useEffect(() => {
 
 return (
     <div 
-    style={{ 
-        display: 'grid', 
-        gridTemplateColumns: `repeat(${gridSize}, 50px)`, // Dynamic columns based on gridSize
-        gridTemplateRows: `repeat(${gridSize}, 50px)`, // Dynamic rows based on gridSize
-        gap: '5px',
-        justifyContent: 'center'
-    }}
-    >
+    className="cipher-grid"
+    style={{ gridTemplateColumns: `repeat(${gridSize}, 50px)`, gridTemplateRows: `repeat(${gridSize}, 50px)` }}
+>
     {grid.map((row, rowIndex) => 
         row.map((cell, colIndex) => (
         <div
             key={`${rowIndex}-${colIndex}`}
-            style={{
-            width: '50px',
-            height: '50px',
-            border: '1px solid #333',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            backgroundColor: '#f4f4f4',
-            fontSize: '24px',
-            fontWeight: 'bold'
-            }}
+            className={`cipher-cell ${cell ? 'filled' : ''}`} 
             onClick={() => handleCellClick(rowIndex, colIndex)}
         >
-            {cell}  
+            {cell}
         </div>
         ))
     )}
-    </div>
+</div>
 );
 };
 

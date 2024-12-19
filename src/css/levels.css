@@ -9,6 +9,13 @@ html, body{
     src: url('IrishGrover.ttf') format('truetype');
     font-weight: normal;
 }
+
+@font-face {
+    font-family: 'midnight';
+    src: url('midnight.ttf') format('truetype');
+    font-weight: normal;
+}
+
 #root {
     height: 100%;    
     display: flex;   
@@ -100,5 +107,17 @@ html, body{
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);  /* Enhanced shadow on hover */
 }
 
+#detective {
+    position: absolute;
+    top: 30%;   
+    left: 35%;  
+    z-index: 1;  
+}
 
-
+.desc{
+    font-family: 'midnight';
+    font-size: 400%;
+    font-weight: 900;
+    margin-left: 20%;
+    margin-top: 13%;
+}

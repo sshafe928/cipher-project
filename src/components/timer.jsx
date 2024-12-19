@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import '../css/timer.css'
 
 const Timer = ({ resetTimer, handleTimeOut }) => {
     const [seconds, setSeconds] = useState(60); 
@@ -34,9 +35,9 @@ const Timer = ({ resetTimer, handleTimeOut }) => {
     }, [isRunning, handleTimeOut]);
   
     return (
-      <div>
-        <h2>Time: {seconds} seconds</h2>
-      </div>
+      <div id="timer" className={seconds <= 10 ? "warning" : ""}>
+            <h2>Time: {seconds} seconds</h2>
+        </div>
     );
   };
   

@@ -1,0 +1,35 @@
+.cipher-grid {
+    display: grid;
+    gap: 40px; /* Increased the gap between cells */
+    justify-content: center;
+    margin-left: -10% ;
+    margin-top:-4%;
+}
+
+.cipher-cell {
+    width: 85px; /* Increase cell width */
+    height: 85px; /* Increase cell height */
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #f4f4f4;
+    font-size: 28px; /* Increase font size */
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.cipher-cell:hover {
+    background-color: #bdb4ac; 
+    transform: scale(1.1); 
+}
+
+.cipher-cell:active {
+    transform: scale(1); 
+}
+
+.cipher-cell.filled {
+    background-color: #9e83678c; 
+    color: #333;
+}

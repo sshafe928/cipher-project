@@ -2,117 +2,117 @@ body{
   background-color:rgb(10, 10, 10)
 }
 
-
-
-.game-container {
-  background-color: var(--panel-color);
-  width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  position: relative;
+html, body{
+  height: 100%;    
+  margin: 0;     
+  padding: 0;
 }
 
-/* Top buttons bar */
-.button-bar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.btn {
-  background-color: var(--button-color);
-  color: var(--panel-color);
-  border: none;
-  padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: inherit;
-}
-
-/* Grid layout */
-.cipher-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin: 20px 0;
-}
-
-.grid-cell {
-  aspect-ratio: 1;
-  border: 2px solid var(--border-color);
-  background: transparent;
-  border-radius: 2px;
-}
-
-/* Form elements */
-.form-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  gap: 8px;
-}
-
-.form-label {
-  flex: 0 0 60px;
+@font-face {
+  font-family: 'irish';
+  src: url('IrishGrover.ttf') format('truetype');
   font-weight: normal;
-  color: black;
 }
 
-.form-field {
-  flex: 1;
-  background-color: var(--input-bg);
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 14px;
-  min-height: 24px;
+@font-face {
+  font-family: 'midnight';
+  src: url('midnight.ttf') format('truetype');
+  font-weight: normal;
 }
 
-input.form-field {
-  border: none;
-  outline: none;
+#root {
+  height: 100%;    
+  display: flex;   
+  }
+
+.parchment{
+  background-image:url('https://res.cloudinary.com/dy2nnbnek/image/upload/v1734598864/DD_Grunge_Background_45623_DD-Grunge-Background-45623-Preview_1_bdv7l3.jpg') ;
+  width: 95%;
+  height:85%;
+  background-size: cover;
+  border-radius: 2%;
+  margin: 3%;
+  margin-top: 5%;
 }
 
-/* Submit button */
-.submit-btn {
-  display: block;
+
+
+
+.btn-nav{
   width: 100%;
-  text-align: center;
-  padding: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 16px;
-  color: black;
-  margin-top: 16px;
+  max-height: 2.5%;
+  display: inline-block;
+  display: flex ;
+  
 }
 
-/* Progress bar */
-.progress-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 8px;
-  background-color: var(--button-color);
-  border-radius: 8px 8px 0 0;
+#quit{
+  background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 2% 14%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 105%;
+    margin-top:-2%;
+    font-family: 'irish';
 }
 
-/* Add a subtle texture overlay */
-.game-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('data:image/png;base64,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');
-  opacity: 0.05;
-  border-radius: 8px;
-  pointer-events: none;
+#start-new-game{
+  background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 2% 1%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 5%;
+    margin-top:-2%;
+    font-family: 'irish';
+}
+
+#hint{
+  background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 2% 1%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 1%;
+    margin-top:-2%;
+    font-family: 'irish';
+}
+
+.cover{
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'irish';
+    font-size: 250%;
+    margin-top: -4%;
+    text-shadow: 3px 8px 8px rgba(0, 0, 0, 0.705);
+  }
+
+  #hint:hover, #start-new-game:hover, #quit:hover{
+    background-color: #9e7f5f; 
+    transform: translateY(-3px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  } 
+
+  #grid {
+    background-color: #9e7f5f8c;
+    padding: 3%; /* Add padding inside */
+    border-radius: 5%; /* Keep rounded corners */
+    margin-left: auto; /* Center the grid horizontally */
+    margin-right: auto; /* Center the grid horizontally */
+    width: fit-content; /* Ensure the grid container adjusts to fit the content */
+    max-width: 95%; /* Prevent the grid from becoming too wide */
+    height: fit-content; /* Adjust the height to fit content */
+    box-sizing: border-box; /* Ensure padding and border are inside the dimensions */
+    display: flex;
+    justify-content: center; /* Center the grid inside */
+    align-items: center; /* Vertically center the grid */
 }

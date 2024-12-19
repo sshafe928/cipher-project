@@ -101,8 +101,8 @@ const CipherGame = () => {
 
   const handleTimeUpdate = (timeLeft) => {
     // Calculate the time spent on the current puzzle
-    const timeSpent = 60 - timeLeft;
-  
+    const timeSpent = 60 - timeLeft;  // The time spent is the difference between 60 and the remaining time
+    
     // Store the time spent for the current puzzle
     setTimeLeftForPuzzle(prev => {
       const newTimeLeft = [...prev];
@@ -118,35 +118,47 @@ const CipherGame = () => {
       incrementGameCompletion();
   
       if (totalGamesCompleted > 2) {
+        
         // Calculate the total time spent on all puzzles
-        const timeSpent = timeLeftForPuzzle.reduce((sum, time) => sum + time, 0); 
+        const timeSpent = timeLeftForPuzzle.reduce((sum, time) => sum + time, 0);
+        timeLeft = handleTimeUpdate(timeSpent) 
   
-        // Calculate score (time spent * 10)
-        const score = (240 - timeSpent) * 10
+        // Calculate the score
+        const score = (240 - timeLeft) * 10;
+
+        
   
         try {
-          // Send the score, initials, and other data to the backend
+          // Ensure the values are being passed correctly
+          console.log('Submitting to backend:', {
+            name: initials,  // Make sure 'initials' has the correct value
+            score: score,
+            time: timeSpent,  
+            id: Date.now(), // Unique ID for the entry (consider using MongoDB _id in backend)
+            level: selectedLevel, 
+          });
+  
+          // Make the POST request
           let result = await fetch('http://localhost:5000/users', {
-            method: 'post',
-            body: JSON.stringify({
-                name: initials, 
-                score: score,
-                time: timeSpent,  
-                id: Date.now(),
-                level: selectedLevel, 
-            }),
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-        });
+            body: JSON.stringify({
+              name: initials,  // Should be passed correctly as the 'name' field in MongoDB
+              score: score,    // Score calculation based on time spent
+              time: timeSpent, // Time spent on the puzzle
+              id: Date.now(),  // Unique ID for the entry
+              level: selectedLevel, // Level of the game
+            })
+          });
   
           result = await result.json();
+          console.log(result);  // Check if the response is successful
   
-          // Log and alert on success
-          console.log(result);
           if (result) {
             alert('Data saved successfully');
           }
   
-          // Reset the game completion count and navigate to leaderboard
+          // Reset game completion count and navigate to leaderboard
           localStorage.setItem('userStats', JSON.stringify({ totalGamesCompleted: 0 }));
           setTotalGamesCompleted(0);
           navigate('/Leaderboard', { state: { level: selectedLevel } });

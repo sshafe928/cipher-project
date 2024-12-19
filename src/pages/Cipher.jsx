@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import CipherGrid from '../components/grid';
 import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 import Timer from '../components/timer';
+import '../css/cipher.css'
 
 const CipherGame = () => {
   const navigate = useNavigate();

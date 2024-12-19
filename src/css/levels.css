@@ -1,0 +1,104 @@
+html, body{
+    height: 100%;    
+    margin: 0;     
+    padding: 0;
+}
+
+@font-face {
+    font-family: 'irish';
+    src: url('IrishGrover.ttf') format('truetype');
+    font-weight: normal;
+}
+#root {
+    height: 100%;    
+    display: flex;   
+    }
+
+.parchment{
+    background-image:url('https://res.cloudinary.com/dy2nnbnek/image/upload/v1734598864/DD_Grunge_Background_45623_DD-Grunge-Background-45623-Preview_1_bdv7l3.jpg') ;
+    width: 95%;
+    height:85%;
+    background-size: cover;
+    border-radius: 2%;
+    margin: 3%;
+    margin-top: 5%;
+}
+
+#back {
+    background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 4% 16%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 85%;
+    font-family: 'irish';
+
+}
+
+.level-select{
+    font-family: 'irish';
+    font-size: 500%;
+    margin-top: 2%;
+    margin-left: 35%;
+    margin-right: 24%;
+    text-shadow: 6px 16px 16px rgba(0, 0, 0, 0.705);
+    position: relative;
+}
+
+.level-detective{
+    font-family: 'irish';
+    font-size: 200%;
+    text-align: center;
+    margin-top: -1%;
+    margin-bottom: 20px;
+    text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.623);
+}
+
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);  /* 2 columns, equal width */
+    gap: 10%;  /* Space between the buttons */
+    justify-items: center;  /* Center items horizontally */
+    margin-top: 2%; /* Adjust top margin if needed */
+}
+
+/* Folder styling */
+.folder {
+    background-color: #b48f6ab2;
+    width: 50%;
+    height: 150px;
+    padding-top: 30px;  /* Space for the tab */
+    padding-bottom: 10px;  /* Padding for the bottom */
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for folder */
+}
+
+
+#level-bubble {
+    background-color: #a88664a4;
+    font-family: 'irish';
+    font-size: 190%;
+    font-weight: 900;
+    padding: 5px 20px;
+    position: absolute;
+    border-radius: 5%;
+    top: 0%;  
+    left: 16%;
+    transform: translateX(-50%);  
+    z-index: 2;  
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+/* Hover effect on the folder */
+.folder:hover {
+    transform: scale(1.05);  /* Slightly enlarge the folder */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);  /* Enhanced shadow on hover */
+}
+
+
+

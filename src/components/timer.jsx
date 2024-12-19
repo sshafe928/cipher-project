@@ -6,7 +6,6 @@ const Timer = ({ resetTimer, handleTimeOut }) => {
   
     useEffect(() => {
       if (resetTimer) {
-        // Reset the timer to 50 seconds when resetTimer is true
         setSeconds(60);
         setIsRunning(true);  
       }

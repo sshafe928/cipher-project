@@ -1,0 +1,102 @@
+html, body{
+    height: 100%;    
+    margin: 0;     
+    padding: 0;
+}
+
+@font-face {
+    font-family: 'irish';
+    src: url('IrishGrover.ttf') format('truetype');
+    font-weight: normal;
+}
+#root {
+    height: 100%;    
+    display: flex;   
+    }
+
+.parchment{
+    background-image:url('https://res.cloudinary.com/dy2nnbnek/image/upload/v1734598864/DD_Grunge_Background_45623_DD-Grunge-Background-45623-Preview_1_bdv7l3.jpg') ;
+    width: 95%;
+    height:85%;
+    background-size: cover;
+    border-radius: 2%;
+    position: absolute;
+}
+
+#back {
+    background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 4% 16%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 85%;
+    font-family: 'irish';
+
+}
+
+.name{
+    font-family: 'irish';
+    font-size: 550%;
+    margin-top: 7%;
+    margin-left: 28%;
+    margin-right: 24%;
+    text-shadow: 6px 16px 16px rgba(0, 0, 0, 0.705);
+    position: relative;
+
+}
+
+
+.name-input {
+    font-family: 'irish';
+    font-size: 550%;
+    margin-top: 7%;
+    margin-left: 37%;
+    text-shadow: 6px 16px 16px rgba(0, 0, 0, 0.705);
+    position: relative;
+    width: 25%; 
+}
+
+input {
+    background: transparent;
+    border: 0;
+    outline: 0;
+    border-bottom: 7px solid rgb(26, 24, 24); 
+    width: 100%; 
+    text-align: center; 
+    font-size: 50%;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.error{
+    font-size: 40%;
+    font-family: 'irish';
+    color: rgb(141, 15, 40);
+    text-shadow: 0px 0px 16px rgba(255, 0, 0, 0.986);
+    margin-left: 14%;
+    margin-top: 3%;
+}
+
+#submit-name{
+    font-family: 'irish';
+    font-size: 40%;
+    padding: 5px 10px;
+    background-color: #B48F6A;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block; 
+    margin-top: 15px; 
+    width: auto;
+    margin-left: 38%;
+    margin-top: 5%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#submit-name:hover {
+    background-color: #dabfb2; 
+    transform: scale(1.05); 
+}

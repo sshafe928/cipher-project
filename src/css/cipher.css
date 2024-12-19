@@ -1,38 +1,231 @@
-.App {
+body{
+  background-color:rgb(10, 10, 10)
+}
+
+html, body{
+  height: 100%;    
+  margin: 0;     
+  padding: 0;
+}
+
+@font-face {
+  font-family: 'irish';
+  src: url('IrishGrover.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'midnight';
+  src: url('midnight.ttf') format('truetype');
+  font-weight: normal;
+}
+
+#root {
+  height: 100%;    
+  display: flex;   
+  }
+
+.parchment{
+  background-image:url('https://res.cloudinary.com/dy2nnbnek/image/upload/v1734598864/DD_Grunge_Background_45623_DD-Grunge-Background-45623-Preview_1_bdv7l3.jpg') ;
+  width: 95%;
+  height:85%;
+  background-size: cover;
+  border-radius: 2%;
+  margin: 3%;
+  margin-top: 5%;
+}
+
+.btn-nav{
+  width: 100%;
+  max-height: 2.5%;
+  display: inline-block;
+  display: flex ;
+  
+}
+
+#quit{
+  background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 2% 14%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 105%;
+    margin-top:-2%;
+    font-family: 'irish';
+}
+
+#start-new-game{
+  background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 2% 1%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 5%;
+    margin-top:-2%;
+    font-family: 'irish';
+}
+
+#hint{
+  background-color: #B48F6A;
+    color: black;
+    border: none;
+    padding: 2% 1%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 190%;
+    margin-left: 1%;
+    margin-top:-2%;
+    font-family: 'irish';
+}
+
+.cover{
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'irish';
+    font-size: 250%;
+    margin-top: -4%;
+    text-shadow: 3px 8px 8px rgba(0, 0, 0, 0.705);
+  }
+
+  #hint:hover, #start-new-game:hover, #quit:hover{
+    background-color: #9e7f5f; 
+    transform: translateY(-3px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  } 
+
+  #grid {
+    background-color: #9e7f5f8c;
+    padding: 3%; 
+    border-radius: 5%; 
+    margin-top: 0%;
+    margin-left:15%;
+    width: fit-content; 
+    max-width: 95%; 
+    height: fit-content;
+    box-sizing: border-box; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    position: absolute;
+}
+
+#grid-info {
+  font-family: 'irish', sans-serif;
+  font-size: 1.5rem; 
+  color: #000000;
+  margin-left:50%;
+  margin-top: 3%;
+  padding: 10px;
+  border-radius: 8px; 
+  width: 30%; 
+}
+
+#grid-info p {
+  margin: 70px 0;
+  font-size: 1..5rem;
+  background-color: #b48f6a86;
+  padding:1rem;
+  border-radius: 5%;
+}
+
+#guess-input {
+  padding: 10px;
+  width: 65%; 
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  outline: none;
   text-align: center;
+  background-color: #b48f6a86;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#submit-btn {
+  background-color: #B48F6A;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: 10px;
+  font-family: 'irish';
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+
+#submit-btn:active {
+  transform: translateY(1px); 
+}
+
+.guess-btn{
+  margin-top:-9.5%;
+  margin-left: 80%;
+}
+.submit-input{
+  font-family: 'irish';
+  margin-top: -22%;
+  margin-left: 20%;
+}
+
+@media screen and (max-width: 768px) {
+  .parchment {
+    height: auto;
+    min-height: 85%;
+    margin: 2%;
+    margin-top: 3%;
+  }
+
+  #grid {
+    width: 95%;
+    margin: 1rem auto;
+  }
+
+  #grid-info {
+    width: 95%;
+    margin: 1rem auto;
+  }
+
+  .btn-nav {
+    padding: 0.5rem;
+  }
+
+  #quit, #start-new-game, #hint {
+    padding: 0.3rem 0.8rem;
+    margin: 0.3rem;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media screen and (max-width: 480px) {
+  .parchment {
+    margin: 1%;
+    margin-top: 2%;
   }
-  to {
-    transform: rotate(360deg);
+
+  #grid-info p {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+  }
+
+  .btn-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #quit, #start-new-game, #hint {
+    width: 80%;
+    margin: 0.2rem;
+  }
+
+  .guess-btn, .submit-input {
+    width: 95%;
+  }
+
+  #guess-input {
+    width: 90%;
   }
 }

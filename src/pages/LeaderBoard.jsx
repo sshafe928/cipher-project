@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';  // Import useNavigate and useLocation hooks
 import Board from '../components/board';
+import '../css/leaderboard.css'
 
 const LeaderBoard = () => {
   const navigate = useNavigate();

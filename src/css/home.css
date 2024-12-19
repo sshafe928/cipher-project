@@ -1,0 +1,111 @@
+html, body{
+    height: 100%;    
+    margin: 0;     
+    padding: 0;
+}
+
+@font-face {
+    font-family: 'irish';
+    src: url('IrishGrover.ttf') format('truetype');
+    font-weight: normal;
+}
+#root {
+    height: 100%;    
+    display: flex;   
+    }
+
+.cover{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.title{
+    font-family: 'irish';
+    font-size: 800%;
+    margin-top: 7%;
+    text-shadow: 6px 16px 16px rgba(0, 0, 0, 0.705);
+
+}
+
+.edition{
+    font-family: 'irish';
+    font-size: 250%;
+    text-align: center;
+    margin-top: -3%;
+    margin-bottom: 20px;
+    text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.623);
+}
+
+
+.parchment{
+    background-image:url('https://res.cloudinary.com/dy2nnbnek/image/upload/v1734598864/DD_Grunge_Background_45623_DD-Grunge-Background-45623-Preview_1_bdv7l3.jpg') ;
+    width: 95%;
+    height:85%;
+    background-size: cover;
+    border-radius: 2%;
+    margin: 3%;
+    margin-top: 5%;
+}
+
+#play {
+    background-color: #be9e7d;
+    color: black;
+    border: none;
+    padding: 1% 2%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 250%;
+    font-family: 'irish';
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.623);
+    margin-left: 41%;
+    margin-top: 8%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#play:hover {
+    background-color: #dabfb2; 
+    transform: scale(1.25); 
+}
+
+#mini{
+    color: black;
+    border: none;
+    padding: 2px px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 150%;
+    font-family: 'irish';
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.623);
+    display:block;
+    margin-top: 2%;
+    margin-left: 46%;
+}
+
+@media screen and (max-width: 768px) {
+    .parchment {
+        width: 98%;
+        height: 80%;
+        margin: 0.5rem auto;
+    }
+
+    #play {
+        margin: 1rem auto;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .title {
+        margin-top: 1rem;
+    }
+
+    .edition {
+        margin-top: 0;
+    }
+
+    .parchment {
+        height: 75%;
+    }
+}

@@ -1,0 +1,42 @@
+#timer {
+    font-family: 'Courier New', Courier, monospace; 
+    background-color: #d8bda2;
+    color: rgb(51, 51, 51);
+    padding: 1%;
+    border-radius: 5%;
+    width: fit-content;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    font-size: 24px;
+    margin-left: 90%;
+}
+
+#timer.warning {
+    background-color: #912424; 
+    animation: shake 0.5s ease-in-out infinite;
+    color: black; 
+}
+
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+h2 {
+    margin: 0;
+    font-size: 80%;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#timer:before {
+    content: "🔍"; 
+    font-size: 40px;
+    display: block;
+    margin-bottom: 10px;
+}

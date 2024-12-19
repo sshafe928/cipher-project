@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';  
 import CipherGrid from '../components/grid';
 import Timer from '../components/timer';
+import '../css/cipher.css'
 
 const CipherGame = () => {
   const navigate = useNavigate();
@@ -146,33 +147,51 @@ const CipherGame = () => {
   };
 
   return (
-    <div>
-      <a href='/Levels'><button className="btn">Quit</button></a>
-      <button className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>
-      <button className="btn" onClick={() => setShow(!show)}>Hint</button>
-      <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} onTimeUpdate={handleTimeUpdate} />
-      <h1>Cipher Game - Level {selectedLevel}</h1>
+    <>
+      <div className="btn-nav">
+          <a href='/Levels'>
+            <button id="quit" className="btn">Quit</button>
+          </a>
+          <button id="start-new-game" className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>
+          <button id="hint" className="btn" onClick={() => setShow(!show)}>Hint</button>
+      </div>
 
-      <h1>Transposition Cipher Game</h1>
+      <div className='parchment'>
+        
+        <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} id="timer" />
 
-      <p>Cipher: {cipher}</p>
-      <p>Order: {order.join(', ')}</p>
-      <p>Guess:</p>
-      <input type="text" placeholder="Enter your guess" onChange={(e) => setGuess(e.target.value)} />
-      <button className="btn" onClick={checkWord}>Submit</button>
-
-      {show && <p>{hint}</p>}
-
-      <CipherGrid gridSize={gridSize} targetWord={originalWord} />
-
-      {showPopup && (
-        <div className="popup">
-          <h2>You ran out of time!</h2>
-          <a href="/Levels"><button className="btn">Back</button></a>
-          <button onClick={() => closePopup()}>Reset</button>
+        <h1 className="cover">Transposition Cipher Game</h1>
+        <div id='grid'>
+            <CipherGrid gridSize={gridSize} targetWord={originalWord} />
         </div>
-      )}
-    </div>
+
+        <div id="grid-info">
+            <p>Cipher:  {cipher}</p>
+            <p>Order:  {order.join(', ')}</p>
+            <p>Guess: </p>
+
+              <div className="submit-input">
+              <input type="text" id="guess-input" placeholder="" onChange={(e) => setGuess(e.target.value)} />
+              </div>
+
+              <div className='guess-btn'>
+              <button id="submit-btn" onClick={checkWord}>Submit</button>
+            </div>
+        </div>
+
+        {show && <p>{hint}</p>}
+
+        
+
+        {showPopup && (
+          <div className="popup">
+            <h2>You ran out of time!</h2>
+            <a href="/Levels"><button className="btn">Back</button></a>
+            <button onClick={() => closePopup()}>Reset</button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

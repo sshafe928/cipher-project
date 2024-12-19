@@ -162,7 +162,7 @@ const CipherGame = () => {
           <button id="start-new-game" className="btn" onClick={() => startNewGame(selectedLevel)}>Start New Game</button>
           <button id="hint" className="btn" onClick={() => setShow(!show)}>Hint</button>
       </div>
-      
+
       <div className='parchment'>
         
         <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} id="timer" />
@@ -172,12 +172,18 @@ const CipherGame = () => {
             <CipherGrid gridSize={gridSize} targetWord={originalWord} />
         </div>
 
-        <div className="grid-info">
-            <p>Cipher: {cipher}</p>
-            <p>Order: {order.join(', ')}</p>
-            <p>Guess:</p>
-            <input type="text" placeholder="Enter your guess" onChange={(e) => setGuess(e.target.value)} />
-            <button className="btn" onClick={checkWord}>Submit</button>
+        <div id="grid-info">
+            <p>Cipher:  {cipher}</p>
+            <p>Order:  {order.join(', ')}</p>
+            <p>Guess: </p>
+
+              <div className="submit-input">
+              <input type="text" id="guess-input" placeholder="" onChange={(e) => setGuess(e.target.value)} />
+              </div>
+
+              <div className='guess-btn'>
+              <button id="submit-btn" onClick={checkWord}>Submit</button>
+            </div>
         </div>
 
         {show && <p>{hint}</p>}

@@ -1,21 +1,21 @@
 .cipher-grid {
     display: grid;
-    gap: 40px; /* Increased the gap between cells */
+    gap: 40px; 
     justify-content: center;
-    margin-left: -10% ;
+    margin-left: -12% ;
     margin-top:-4%;
 }
 
 .cipher-cell {
-    width: 85px; /* Increase cell width */
-    height: 85px; /* Increase cell height */
+    width: 85px;
+    height: 85px; 
     border: 1px solid #333;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     background-color: #f4f4f4;
-    font-size: 28px; /* Increase font size */
+    font-size: 44px; 
     font-weight: bold;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
@@ -32,4 +32,80 @@
 .cipher-cell.filled {
     background-color: #9e83678c; 
     color: #333;
+}
+
+.cipher-grid {
+    display: grid;
+    gap: clamp(20px, 4vw, 40px);
+    justify-content: center;
+    margin: -4% auto 0;
+    width: 90%;
+    max-width: 600px;
+}
+
+.cipher-cell {
+    width: clamp(50px, 12vw, 85px);
+    height: clamp(50px, 12vw, 85px);
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #f4f4f4;
+    font-size: clamp(24px, 6vw, 44px);
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.cipher-cell:hover {
+    background-color: #bdb4ac;
+    transform: scale(1.1);
+}
+
+.cipher-cell:active {
+    transform: scale(1);
+}
+
+.cipher-cell.filled {
+    background-color: #9e83678c;
+    color: #333;
+}
+
+/* Media Queries */
+@media screen and (max-width: 768px) {
+    .cipher-grid {
+        gap: clamp(15px, 3vw, 30px);
+        margin-top: 2%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .cipher-grid {
+        gap: clamp(10px, 2vw, 20px);
+        width: 95%;
+    }
+
+    .cipher-cell {
+        width: clamp(40px, 10vw, 60px);
+        height: clamp(40px, 10vw, 60px);
+        font-size: clamp(20px, 5vw, 32px);
+    }
+
+    /* Disable hover effect on mobile */
+    .cipher-cell:hover {
+        transform: none;
+    }
+}
+
+/* For very small screens */
+@media screen and (max-width: 320px) {
+    .cipher-grid {
+        gap: 8px;
+    }
+
+    .cipher-cell {
+        width: clamp(35px, 8vw, 45px);
+        height: clamp(35px, 8vw, 45px);
+        font-size: clamp(16px, 4vw, 24px);
+    }
 }

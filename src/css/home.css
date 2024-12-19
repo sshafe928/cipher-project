@@ -82,3 +82,30 @@ html, body{
     margin-top: 2%;
     margin-left: 46%;
 }
+
+@media screen and (max-width: 768px) {
+    .parchment {
+        width: 98%;
+        height: 80%;
+        margin: 0.5rem auto;
+    }
+
+    #play {
+        margin: 1rem auto;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .title {
+        margin-top: 1rem;
+    }
+
+    .edition {
+        margin-top: 0;
+    }
+
+    .parchment {
+        height: 75%;
+    }
+}

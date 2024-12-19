@@ -99,14 +99,11 @@ const CipherGame = () => {
     }
   };
 
-  const handleTimeUpdate = (timeLeft) => {
-    // Calculate the time spent on the current puzzle
-    const timeSpent = 60 - timeLeft;  // The time spent is the difference between 60 and the remaining time
-    
-    // Store the time spent for the current puzzle
+  const handleTimeUpdate = (secondsRemaining) => {
+    const timeSpent = 60 - secondsRemaining; // Time spent is the difference between 60 and the remaining time
     setTimeLeftForPuzzle(prev => {
       const newTimeLeft = [...prev];
-      newTimeLeft.push(timeSpent); // Store the time spent, not the remaining time
+      newTimeLeft.push(timeSpent); // Store the time spent
       return newTimeLeft;
     });
   };
@@ -118,47 +115,32 @@ const CipherGame = () => {
       incrementGameCompletion();
   
       if (totalGamesCompleted > 2) {
-        
-        // Calculate the total time spent on all puzzles
-        const timeSpent = timeLeftForPuzzle.reduce((sum, time) => sum + time, 0);
-        timeLeft = handleTimeUpdate(timeSpent) 
+        const totalTimeSpent = timeLeftForPuzzle.reduce((sum, time) => sum + time, 0); // Sum the time spent on all puzzles
   
-        // Calculate the score
-        const score = (240 - timeLeft) * 10;
-
+        // Calculate the score based on total time spent
+        const score = (240 - totalTimeSpent) * 10;
         
-  
+        const name = localStorage.getItem('userInitials');
         try {
-          // Ensure the values are being passed correctly
-          console.log('Submitting to backend:', {
-            name: initials,  // Make sure 'initials' has the correct value
-            score: score,
-            time: timeSpent,  
-            id: Date.now(), // Unique ID for the entry (consider using MongoDB _id in backend)
-            level: selectedLevel, 
-          });
-  
-          // Make the POST request
           let result = await fetch('http://localhost:5000/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              name: initials,  // Should be passed correctly as the 'name' field in MongoDB
-              score: score,    // Score calculation based on time spent
-              time: timeSpent, // Time spent on the puzzle
-              id: Date.now(),  // Unique ID for the entry
-              level: selectedLevel, // Level of the game
-            })
+              name: name,
+              score: score,
+              time: totalTimeSpent,
+              id: Date.now(),
+              level: selectedLevel,
+            }),
           });
   
           result = await result.json();
-          console.log(result);  // Check if the response is successful
+          console.log(result);
   
           if (result) {
             alert('Data saved successfully');
           }
   
-          // Reset game completion count and navigate to leaderboard
           localStorage.setItem('userStats', JSON.stringify({ totalGamesCompleted: 0 }));
           setTotalGamesCompleted(0);
           navigate('/Leaderboard', { state: { level: selectedLevel } });
@@ -223,7 +205,7 @@ const CipherGame = () => {
 
       <div className='parchment'>
         
-        <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} id="timer" />
+      <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} onTimeUpdate={handleTimeUpdate} id='timer'/>
 
         <h1 className="cover">Transposition Cipher Game</h1>
         <div id='grid'>

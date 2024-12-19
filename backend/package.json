@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Khadeem Bernard <khadeem.bernard@west-mec.org> (https://github.com/khadeembernard)",
+  "author": "",
   "license": "MIT",
   "dependencies": {
     "concurrently": "^8.2.2",

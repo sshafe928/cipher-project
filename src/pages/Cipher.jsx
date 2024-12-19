@@ -3,12 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import CipherGrid from '../components/grid';
 import Timer from '../components/timer';
 import '../css/cipher.css'
+import { words_9, words_16, words_25, words_36, words_9_hints, words_16_hints, words_25_hints, words_36_hints } from '../cipher-words';
 
 const CipherGame = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { level, initials } = location.state || {}; 
-
   const [selectedLevel, setSelectedLevel] = useState(level || 'level_1'); 
   const [gridSize, setGridSize] = useState(3);
   const [cipher, setCipher] = useState('');
@@ -44,7 +44,59 @@ const CipherGame = () => {
 
   
   const handleLevelScrambling = (level) => {
-    // ... existing code for scrambling the words
+    const levelWordMaps = {
+      'level_1': { words: words_9, hints: words_9_hints, length: 9 },
+      'level_2': { words: words_16, hints: words_16_hints, length: 16 },
+      'level_3': { words: words_25, hints: words_25_hints, length: 25 },
+      'level_4': { words: words_36, hints: words_36_hints, length: 36 }
+    };
+
+    const { words, hints, length } = levelWordMaps[level];
+    const randomIndex = Math.floor(Math.random() * words.length);
+
+    const word = words[randomIndex];
+    const hint = hints[randomIndex];
+
+    if (word.length !== length) {
+      console.error(`Word length mismatch for ${level}`);
+      return null;
+    }
+
+    const scrambleWord = (word, numParts) => {
+      const parts = [];
+      const partLength = Math.floor(length / numParts);
+      for (let i = 0; i < numParts; i++) {
+        parts.push(word.slice(i * partLength, (i + 1) * partLength));
+      }
+
+      const groupedLetters = [];
+      for (let i = 0; i < parts[0].length; i++) {
+        groupedLetters.push(parts.map(part => part[i]));
+      }
+
+      const shuffledOrder = Array.from({ length: numParts }, (_, i) => i).sort(() => Math.random() - 0.5);
+      const shuffledGroups = shuffledOrder.map(index => groupedLetters[index]);
+
+      const scrambledWord = shuffledGroups.map(group => group.join('')).join('');
+      return { scrambledWord, shuffledOrder };
+    };
+
+    switch (level) {
+      case 'level_1':
+        const { scrambledWord: word1, shuffledOrder: order1 } = scrambleWord(word, 3);
+        return { originalWord: word, cipher: word1, gridSize: 3, order: order1, hint: hint };
+      case 'level_2':
+        const { scrambledWord: word2, shuffledOrder: order2 } = scrambleWord(word, 4);
+        return { originalWord: word, cipher: word2, gridSize: 4, order: order2, hint: hint };
+      case 'level_3':
+        const { scrambledWord: word3, shuffledOrder: order3 } = scrambleWord(word, 5);
+        return { originalWord: word, cipher: word3, gridSize: 5, order: order3, hint: hint };
+      case 'level_4':
+        const { scrambledWord: word4, shuffledOrder: order4 } = scrambleWord(word, 6);
+        return { originalWord: word, cipher: word4, gridSize: 6, order: order4, hint: hint };
+      default:
+        return null;
+    }
   };
 
   const handleTimeUpdate = (timeLeft) => {
@@ -75,15 +127,16 @@ const CipherGame = () => {
         try {
           // Send the score, initials, and other data to the backend
           let result = await fetch('http://localhost:5000/users', {
-            method: 'POST',
+            method: 'post',
             body: JSON.stringify({
-              initials, 
-              score,     
-              timeSpent, 
-              id: Date.now(), 
+                name: initials, 
+                score: score,
+                time: timeSpent,  
+                id: Date.now(),
+                level: selectedLevel, 
             }),
             headers: { 'Content-Type': 'application/json' },
-          });
+        });
   
           result = await result.json();
   
@@ -168,11 +221,12 @@ const CipherGame = () => {
         <div id="grid-info">
             <p>Cipher:  {cipher}</p>
             <p>Order:  {order.join(', ')}</p>
-            <p>Guess: </p>
-
+            <div id='#guess'>
+              <p>Guess: </p>
               <div className="submit-input">
               <input type="text" id="guess-input" placeholder="" onChange={(e) => setGuess(e.target.value)} />
               </div>
+            </div>
 
               <div className='guess-btn'>
               <button id="submit-btn" onClick={checkWord}>Submit</button>

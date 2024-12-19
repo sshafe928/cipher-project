@@ -103,8 +103,8 @@ html, body{
     background-color: #9e7f5f8c;
     padding: 3%; 
     border-radius: 5%; 
-    margin-top: 0%;
-    margin-left:15%;
+    margin-top: -1.5%;
+    margin-left:9%;
     width: fit-content; 
     max-width: 95%; 
     height: fit-content;
@@ -142,7 +142,7 @@ html, body{
   border-radius: 5px;
   outline: none;
   text-align: center;
-  background-color: #b48f6a86;
+  
 }
 
 #submit-btn {
@@ -153,13 +153,18 @@ html, body{
   border-radius: 5px;
   font-size: 1.2rem;
   cursor: pointer;
-  margin-top: 10px;
   font-family: 'irish';
+  margin-left: -20%;
 }
 
 
 #submit-btn:active {
   transform: translateY(1px); 
+}
+
+#guess{
+  display: inline-block;
+  background-color: #b48f6a86;
 }
 
 .guess-btn{
@@ -168,7 +173,7 @@ html, body{
 }
 .submit-input{
   font-family: 'irish';
-  margin-top: -22%;
+  margin-top: -27%;
   margin-left: 20%;
 }
 

@@ -9,15 +9,16 @@ const readAllUsers = async (req, res) => {
     }
 }
 
-const createUser = async (req, res) =>  {
-    const { initials, score, timeSpent, id } = req.body;
+const createUser = async (req, res) => {
+    const { initials, score, timeSpent, id, level } = req.body;  
 
     try {
-    const newUser = new User({ initials, score, timeSpent, id });
-    await newUser.save();
-    res.status(201).json({ message: 'User data saved successfully' });
+        const newUser = new User({ initials, score, timeSpent, id, level });
+        await newUser.save();
+        res.status(201).json({ message: 'User data saved successfully' });
     } catch (err) {
-    res.status(500).json({ error: 'Failed to save user data' });
+        console.error("Error saving user data:", err); 
+        res.status(500).json({ error: 'Failed to save user data' });
     }
 };
 

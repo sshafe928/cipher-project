@@ -1,70 +1,65 @@
-# Getting Started with Create React App
+# Cipher Game - README
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+The Cipher Game is a word puzzle game where players solve scrambled words using a transposition cipher. The game features different levels with varying grid sizes and difficulty. Players can also track their progress, earn scores, and challenge themselves to complete the game in less time.
 
-## Available Scripts
+## Features
+- **Multiple Levels**: The game offers four levels with different grid sizes:
+  - **Level 1**: 3x3 grid
+  - **Level 2**: 4x4 grid
+  - **Level 3**: 5x5 grid
+  - **Level 4**: 6x6 grid
+- **Hints**: Players can request hints to help them guess the correct word.
+- **Timer**: Each game has a timer, and players are challenged to solve the puzzle before time runs out.
+- **Leaderboard**: Players can view their ranking based on score and time taken.
+- **User Stats**: Progress is tracked locally, including games completed and time spent.
 
-In the project directory, you can run:
+## How to Play
+### Starting the Game:
+1. Enter your initials on the name screen.
+2. Choose a level on the Levels page.
 
-### `npm start`
+### Gameplay:
+1. A cipher word will appear with scrambled letters.
+2. Use the provided grid to figure out the original word.
+3. Submit your guess and check if you’re correct.
+4. Use hints if needed.
+5. Solve the puzzle before time runs out.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Completion:
+1. After guessing correctly, your score will be calculated based on time taken.
+2. The game will update your stats and proceed to the next level.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Leaderboard:
+1. View the leaderboard to see your rank based on your performance.
+2. You can continue playing by progressing to the next level.
 
-### `npm test`
+## Tech Stack
+- **React**: For the user interface.
+- **React Router**: For page navigation.
+- **CSS**: For styling the game.
+- **LocalStorage**: To store user data and game progress.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/cipher-game.git
+   ```
 
-### `npm run build`
+2. Install dependencies
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Start the application
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   The game should now be running on [http://localhost:3000](http://localhost:3000).
 
-### `npm run eject`
+## Contributing
+1. Fork the repository.
+2. Create a new branch for your feature or fix.
+3. Commit your changes and push to your fork.
+4. Create a pull request.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## License
+This project is licensed under the MIT License.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+##render

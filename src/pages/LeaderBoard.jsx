@@ -40,12 +40,13 @@ const LeaderBoard = () => {
 
   return (
     <>
-      <div>{level} LeaderBoard</div>
+
       <a href="/Levels">
-        <button className="btn">Back</button>
+        <button className="btn" id="back">Back</button>
       </a>
-      <button className="btn" onClick={handleLevelSelection}>Next</button>
+      <button className="btn" id='next' onClick={handleLevelSelection}>Next</button>
       <Board level={level} />
+      
     </>
   );
 };

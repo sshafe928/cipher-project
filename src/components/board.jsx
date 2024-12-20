@@ -1,42 +1,62 @@
 import React, { useState, useEffect } from 'react';
 
-// Sample data array for people
-const sampleData = [
-{ name: 'John Doe', time: '12:30', score: 150 },
-{ name: 'Jane Smith', time: '10:15', score: 200 },
-{ name: 'Mark Brown', time: '15:45', score: 100 },
-{ name: 'Lucy Green', time: '11:00', score: 180 },
-{ name: 'Charlie Black', time: '09:45', score: 210 }
-];
-
-const Board = () => {
-// Sort the sample data by score in descending order
+const Board = ({ level }) => {
 const [leaderboard, setLeaderboard] = useState([]);
 
 useEffect(() => {
-    const sortedLeaderboard = [...sampleData].sort((a, b) => b.score - a.score);
-    setLeaderboard(sortedLeaderboard);
-}, []);
+    const fetchLeaderboard = async () => {
+    try {
+        const response = await fetch(`http://localhost:5000/users/leaderboard-info`);
+        const data = await response.json();
+        
+        // Filter by level and sort by score
+        const filteredData = data
+        .filter(player => player.level === level)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10); // Only take top 10
+        
+        setLeaderboard(filteredData);
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+    }
+    };
+
+    fetchLeaderboard();
+}, [level]);
+
+// Format time to mm:ss
+const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
 
 return (
-    <div>
-    <h1>Leaderboard</h1>
-    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+    <div id="leaderboard-container">
+    <h1>Top 10 Players</h1>
+    <div id="level">{level.replace('_', ' ').toUpperCase()}</div>
+    <table>
         <thead>
         <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Rank</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Name</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Time</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Score</th>
+            <th>RANK</th>
+            <th>NAME</th>
+            <th>SCORE</th>
         </tr>
         </thead>
         <tbody>
         {leaderboard.map((player, index) => (
-            <tr key={index}>
-            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{index + 1}</td>
-            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{player.name}</td>
-            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{player.time}</td>
-            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{player.score}</td>
+            <tr key={player._id}>
+            <td>{index + 1}</td>
+            <td>{player.name}</td>
+            <td>{player.score}</td>
+            </tr>
+        ))}
+        {/* Fill empty slots if less than 10 entries */}
+        {[...Array(Math.max(0, 10 - leaderboard.length))].map((_, index) => (
+            <tr key={`empty-${index}`}>
+            <td>{leaderboard.length + index + 1}</td>
+            <td>---</td>
+            <td>---</td>
             </tr>
         ))}
         </tbody>

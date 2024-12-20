@@ -13,7 +13,6 @@ const Home = () => {
       </div>
       <div>
           <a href="/Name"><button id ="play" className="btn">Enter the Lab</button></a>
-          <a href="/HTP"><button id='mini' className="btn">How to play..</button></a>
       </div>
     </div>
     </>

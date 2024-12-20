@@ -19,6 +19,8 @@ const CipherGame = () => {
   const [resetTimer, setResetTimer] = useState(false);
   const [guess, setGuess] = useState('');
   const [gameComplete, setGameComplete] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [totalTimeSpent, setTotalTimeSpent] = useState(0);
   const [totalGamesCompleted, setTotalGamesCompleted] = useState(() => {
     const savedStats = JSON.parse(localStorage.getItem('userStats')) || {};
     return savedStats.totalGamesCompleted || 0;
@@ -27,6 +29,7 @@ const CipherGame = () => {
 
   // Track remaining time for each puzzle
   const [timeLeftForPuzzle, setTimeLeftForPuzzle] = useState([]);
+  const [seconds, setSeconds] = useState(60);
 
   useEffect(() => {
     // Trigger the scrambling logic when the level changes
@@ -41,6 +44,21 @@ const CipherGame = () => {
       }
     }
   }, [selectedLevel]);
+
+  useEffect(() => {
+    // Set start time when component mounts or when a new game starts
+    setStartTime(Date.now());
+  }, [selectedLevel]);
+
+  useEffect(() => {
+    const storedInitials = localStorage.getItem('userInitials');
+    console.log('Stored initials:', storedInitials);
+    if (!storedInitials && location.state?.initials) {
+      localStorage.setItem('userInitials', location.state.initials);
+    }
+  }, [location.state?.initials]);
+
+  
 
   
   const handleLevelScrambling = (level) => {
@@ -100,12 +118,10 @@ const CipherGame = () => {
   };
 
   const handleTimeUpdate = (secondsRemaining) => {
-    const timeSpent = 60 - secondsRemaining; // Time spent is the difference between 60 and the remaining time
-    setTimeLeftForPuzzle(prev => {
-      const newTimeLeft = [...prev];
-      newTimeLeft.push(timeSpent); // Store the time spent
-      return newTimeLeft;
-    });
+    if (startTime) {
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+      setTotalTimeSpent(prevTotal => prevTotal + timeSpent);
+    }
   };
 
   const checkWord = async () => {
@@ -113,40 +129,64 @@ const CipherGame = () => {
       alert('Congratulations! You guessed the word correctly.');
       setGameComplete(true);  
       incrementGameCompletion();
-  
-      if (totalGamesCompleted > 2) {
-        const totalTimeSpent = timeLeftForPuzzle.reduce((sum, time) => sum + time, 0); // Sum the time spent on all puzzles
-  
-        // Calculate the score based on total time spent
-        const score = (240 - totalTimeSpent) * 10;
+
+      if (totalGamesCompleted >= 2) {
+        // Get user initials
+        const userInitials = localStorage.getItem('userInitials');
+        console.log('Retrieved initials:', userInitials); // Debug log
         
-        const name = localStorage.getItem('userInitials');
+        // Calculate time
+        const currentGameTime = 60 - seconds;
+        const finalTotalTime = timeLeftForPuzzle.reduce((sum, time) => sum + time, 0) + currentGameTime;
+        console.log('Calculated time:', finalTotalTime); // Debug log
+        
+        // Calculate score
+        const calculatedScore = Math.max(0, (240 - finalTotalTime) * 10);
+        console.log('Calculated score:', calculatedScore); // Debug log
+
+        const dataToSubmit = {
+          name: String(userInitials || 'Unknown'), // Ensure it's a string
+          score: Number(calculatedScore), // Ensure it's a number
+          time: Number(finalTotalTime), // Ensure it's a number
+          id: Date.now(),
+          level: String(selectedLevel), // Ensure it's a string
+        };
+
+        console.log('Final data being sent:', dataToSubmit); // Debug log
+
         try {
-          let result = await fetch('http://localhost:5000/users', {
+          const response = await fetch('http://localhost:5000/users', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: name,
-              score: score,
-              time: totalTimeSpent,
-              id: Date.now(),
-              level: selectedLevel,
-            }),
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(dataToSubmit)
           });
-  
-          result = await result.json();
-          console.log(result);
-  
-          if (result) {
-            alert('Data saved successfully');
+
+          const responseText = await response.text();
+          console.log('Raw response:', responseText); // Debug log
+
+          let result;
+          try {
+            result = JSON.parse(responseText);
+          } catch (e) {
+            console.error('Failed to parse response:', e);
           }
-  
-          localStorage.setItem('userStats', JSON.stringify({ totalGamesCompleted: 0 }));
-          setTotalGamesCompleted(0);
-          navigate('/Leaderboard', { state: { level: selectedLevel } });
+
+          console.log('Parsed response:', result); // Debug log
+
+          if (response.ok) {
+            alert('Data saved successfully');
+            localStorage.setItem('userStats', JSON.stringify({ totalGamesCompleted: 0 }));
+            setTotalGamesCompleted(0);
+            navigate('/Leaderboard', { state: { level: selectedLevel } });
+          } else {
+            throw new Error(`Server responded with status: ${response.status}`);
+          }
         } catch (error) {
           console.error('Error saving data:', error);
-          alert('Failed to save data.');
+          alert(`Failed to save data: ${error.message}`);
         }
       } else {
         startNewGame(selectedLevel);
@@ -172,6 +212,7 @@ const CipherGame = () => {
     window.location.reload();
     setShow(false);
     setGuess('');
+    setStartTime(Date.now()); 
 
     const gameDetails = handleLevelScrambling(level);
     if (gameDetails) {
@@ -205,7 +246,7 @@ const CipherGame = () => {
 
       <div className='parchment'>
         
-      <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} onTimeUpdate={handleTimeUpdate} id='timer'/>
+      <Timer resetTimer={resetTimer} handleTimeOut={handleTimeOut} onTimeUpdate={(timeLeft) => { setSeconds(timeLeft); handleTimeUpdate(timeLeft);}}/>
 
         <h1 className="cover">Transposition Cipher Game</h1>
         <div id='grid'>

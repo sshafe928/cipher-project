@@ -15,35 +15,29 @@ const Timer = ({ resetTimer, handleTimeOut, onTimeUpdate }) => {
     useEffect(() => {
       let interval;
   
-      // Start the countdown if the timer is running
-      if (isRunning) {
+      if (isRunning && seconds > 0) {
         interval = setInterval(() => {
-          setSeconds((prevSeconds) => {
-            if (prevSeconds === 1) {
-              handleTimeOut();
+          setSeconds(prevSeconds => {
+            const newSeconds = prevSeconds - 1;
+            if (newSeconds <= 0) {
               clearInterval(interval);
-              return 0; 
+              handleTimeOut();
+              return 0;
             }
-            return prevSeconds - 1;
+            // Call onTimeUpdate with current seconds
+            onTimeUpdate(newSeconds);
+            return newSeconds;
           });
         }, 1000);
-      } else {
-        clearInterval(interval);
       }
   
       return () => clearInterval(interval);
-    }, [isRunning, handleTimeOut]);
-  
-    useEffect(() => {
-      if (onTimeUpdate) {
-        onTimeUpdate(seconds);
-      }
-    }, [seconds, onTimeUpdate]); 
+    }, [isRunning, handleTimeOut, onTimeUpdate]);
   
     return (
       <div id="timer" className={seconds <= 10 ? "warning" : ""}>
-            <h2>Time: {seconds} seconds</h2>
-        </div>
+        <h2>Time: {seconds} seconds</h2>
+      </div>
     );
 };
 

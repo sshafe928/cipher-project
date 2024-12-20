@@ -1,21 +1,28 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
 const userSchema = new mongoose.Schema({
     name: {
-        type:String,
-        maxLength:[3, "The name cannot exceed 20 characters"]
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 5
     },
-    id:{
-        type:Date
+    score: {
+        type: Number,
+        required: true
     },
-    time:{
-        type:Number
+    time: {
+        type: Number,
+        required: true
     },
-    score:{
-        type:Number
+    id: {
+        type: Number,
+        required: true
     },
-    level:{
-        type:String
+    level: {
+        type: String,
+        required: true
     }
-}, {collection: "users"})
+});
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
